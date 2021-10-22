@@ -20,7 +20,8 @@ const Room_form = () => {
             }
         }).then((response)=>{
             alert("Room created successfully")
-            history.push("/profile")
+            const room_id = response.data.room_id
+            history.push("/room/"+room_id)
         }).catch((err)=>{
             alert("Error occured while creating room. Please try again.")
             console.log(err);

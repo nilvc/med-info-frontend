@@ -42,9 +42,6 @@ export default function Navbar() {
                     </button>
                     <div className="collapse navbar-collapse" id="navbarNavDropdown">
                         <ul className="navbar-nav mb-2 mb-lg-0 ">
-                            <li className="nav-item">
-                                <Link className="nav-link" aria-current="page" to="/">Home</Link>
-                            </li>
                             {
                                 userstate["is_auth"]  ? 
                                 <li className="nav-item">
@@ -63,7 +60,7 @@ export default function Navbar() {
                         </ul>
                         {
                           userstate["is_auth"]  ? 
-                          <button className="btn btn-sm ml-auto btn-outline-primary" onClick={handleLogout}>Log-out</button>
+                          <button className="btn btn-sm ml-auto btn-outline-danger" onClick={handleLogout}>Log-out</button>
                           :<Link className="btn btn-sm ml-auto btn-outline-primary " to="/">Login/Register</Link>
                         }
                         

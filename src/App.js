@@ -1,6 +1,7 @@
 import {BrowserRouter as Router , Switch , Route} from 'react-router-dom'
 import { Userprovider } from './components/users/user-context';
 
+
 import LoginRegister from './components/users/login-or-register'
 import Navbar from './components/navbar/navbar';
 import PersonalInfo from './components/users/personal-info';
@@ -10,6 +11,7 @@ import AllInvites from './components/Utilities/Invites';
 import Room_form from './components/Utilities/room-form';
 
 function App() {
+
   return (
     <Router>
       <Userprovider>

@@ -1,24 +1,54 @@
-import React,{useState , useContext} from "react";
+import React,{useState , useContext , useEffect} from "react";
 import axios from 'axios';
 import {useHistory} from "react-router-dom";
 import { Usercontext } from "../users/user-context";
 import './login-or-register.css'
 
-function LoginRegister({changestate}) {
+function LoginRegister() {
     const history = useHistory();
     const [rightpanel,setRightpanel]=useState(false);
     const [userstate , setUserstate] = useContext(Usercontext);
 
     const [loginfields,setLoginFields] = useState({
-        username:"",
+        email:"",
         password:""
     });
 
     const [registerfields,setRegisterFields] = useState({
-        username:"",
+        first_name:"",
+        last_name:"",
         email:"",
-        password:""
+        password:"",
+        profile_pic:null
     });
+
+    // on page load if token is present 
+    // validating token here using componentdid mount
+
+    useEffect (()=>{
+        const if_allready_logedin = () =>{
+            const token  = localStorage.getItem("auth_token")
+            if(token)
+            { 
+                const url = "/api/auth/validate_token"
+                axios.get(url,{
+                    headers:{
+                        "content-type":"application/json",
+                        "Authorization": "Token "+token
+                    }
+                }).then((response)=>{
+                    history.push("/profile")
+                }).catch((error)=>{
+                    localStorage.clear()
+                    console.log("setting flase")
+                    setUserstate({...userstate,"is_auth":false , 
+                            "username":"",
+                            "email":""})
+                });
+            }
+        }
+        if_allready_logedin()
+    },[])
 
     function handleLoginChange(e){
         const fieldName = e.target.name;
@@ -31,10 +61,28 @@ function LoginRegister({changestate}) {
         const newValue = e.target.value;
         setRegisterFields({...registerfields,[fieldName]:newValue});
     }
+
+    function handlefileUpload(e){
+        const newValue = e.target.files[0] ;
+        const filesize = newValue.size
+        console.log("file",filesize)
+        setRegisterFields({...registerfields,"profile_pic":newValue});
+      }
     
     function handleLogin(e){
         e.preventDefault();
-        axios.post("http://127.0.0.1:8000/api/auth/login",loginfields,{
+        let username = ""
+        const email = loginfields.email
+        for(var i=email.length -1;i>=0;i--)
+        {
+            if(email[i]==="@")
+            {
+                username = email.slice(0,i);
+                break;
+            }
+        }
+        const logindata = {"username":username , "password" : loginfields.password}
+        axios.post("http://127.0.0.1:8000/api/auth/login",logindata,{
             headers:{
                 "content-type":"application/json"
             }
@@ -50,35 +98,40 @@ function LoginRegister({changestate}) {
             alert("Invalid credentials !!");
         });
         setLoginFields({
-            username:"",
+            email:"",
             password:""
         });
     }
+
+
     function handleRegister(e){
         e.preventDefault();
-        console.log(registerfields);
-        axios.post("http://127.0.0.1:8000/api/auth/register",registerfields,{
+        let form_data = new FormData();
+        form_data.append('first_name', registerfields.first_name);
+        form_data.append('last_name', registerfields.last_name);
+        form_data.append('email', registerfields.email);
+        form_data.append('password', registerfields.password);
+        form_data.append('profile_pic', registerfields.profile_pic, registerfields.profile_pic.name);
+
+        axios.post("/api/auth/create_profile",form_data,{
                 headers:{
-                    "content-type":"application/json",
+                    'content-type': 'multipart/form-data',
                 }
-            })
-            .then((res)=>{
-                localStorage.setItem('auth_token',res.data.token);
-                localStorage.setItem('username',res.data.user.username);
-                localStorage.setItem("email",res.data.user.email);
-                setUserstate({"is_auth":true , 
-                                "username":res.data.user.username,
-                                "email":res.data.user.email })
-                history.push('/personal_info-form');
-            })
-            .catch((err)=>{
-                alert("Some error occured");
+            }).then((response)=>{
+                // user has regestired call login now
+                alert("Registration successfull . You can login now")
+            }).catch((err)=>{
+                alert("Invalid credentials !!");
+                console.log(err);
             });
-            setRegisterFields({
-                username:"",
+        setRegisterFields({
+                first_name:"",
+                last_name:"",
                 email:"",
-                password:""
-            });
+                password:"",
+                profile_pic:null
+            })
+        
     }
     
 
@@ -88,9 +141,39 @@ function LoginRegister({changestate}) {
                     <div className="form-container sign-up-container">
                         <form className="fform" onSubmit = {handleRegister} >
                             <h1>Create Account</h1>
-                            <input className="finput" type="text" placeholder="Name" name = "username" value = {registerfields.username} onChange = {handleRegisterChange} required />
-                            <input className="finput" type="email" placeholder="Email" name = "email" value = {registerfields.email} onChange = {handleRegisterChange} required />
-                            <input className="finput" type="password" placeholder="Password" name = "password"  value = {registerfields.password} onChange = {handleRegisterChange} required/>
+
+                            <input className="finput" type="text" placeholder="first name" 
+                                    name = "first_name" value = {registerfields.first_name} 
+                                    onChange = {handleRegisterChange} required />
+
+
+                            <input className="finput" type="text" placeholder="last name" 
+                                    name = "last_name" value = {registerfields.last_name} 
+                                    onChange = {handleRegisterChange} required />
+                            
+
+                            <input className="finput" type="email" placeholder="Email" 
+                                    name = "email" value = {registerfields.email} 
+                                    onChange = {handleRegisterChange} required />
+                            
+
+                            <input className="finput" type="password" placeholder="Password" 
+                                    name = "password"  value = {registerfields.password} 
+                                    data-toggle="tooltip" data-placement="top" title="password"
+                                    onChange = {handleRegisterChange} required/>
+
+                            <div className="finput from-row m-3">
+                                <div className="custom-file col-md-12 align-self-center">
+                                    <input type="file" onChange={handlefileUpload}  required 
+                                            className="custom-file-input" id="customFile"
+                                            accept=".png, .jpg, .jpeg"/>
+                                    <label className="custom-file-label" htmlFor="customFile">
+                                        {registerfields.profile_pic ? registerfields.profile_pic.name : "Profile pic here"}
+                                    </label>
+                                </div>
+                            
+                            </div>
+
                             <button className="fbutton" type="submit">Create Account</button>
                         </form>
                     </div>
@@ -98,7 +181,7 @@ function LoginRegister({changestate}) {
                         <form className="fform" onSubmit = {handleLogin} >
                             {/* This is shown intially */}
                             <h1>Sign in</h1>
-                            <input className="finput" type="text" placeholder="Username" name = "username"  value = {loginfields.username} onChange = {handleLoginChange} required/>
+                            <input className="finput" type="email" placeholder="Email" name = "email"  value = {loginfields.email} onChange = {handleLoginChange} required/>
                             <input className="finput" type="password" placeholder="Password" name = "password" value = {loginfields.password} onChange = {handleLoginChange} required />
                             <p className="fp">Forgot your password?</p>
                             <button className="fbutton" type="submit">Login In</button>

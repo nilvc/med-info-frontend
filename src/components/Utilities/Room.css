@@ -7,3 +7,11 @@
 	overflow: hidden;
 
 }
+
+.room_heading {
+	font-family: "Arial Black", sans-serif;
+	letter-spacing: -1px;
+	background-color: #d7e6f8;
+	color: black;
+	padding: 5px 10px;
+}

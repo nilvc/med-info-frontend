@@ -5,9 +5,15 @@ export const Usercontext = createContext();
 
 
 export const Userprovider = (props) => {
+    const token = localStorage.getItem("auth_token")
+    let is_authenticated = false;
+    if (token)
+    {
+        is_authenticated = true;
+    }
     const [userstate , setUserstate] = useState(
         {
-            is_auth: localStorage.getItem("auth_token") ? true : false,
+            is_auth: is_authenticated,
             username :localStorage.getItem("username"),
             email :localStorage.getItem("email")
         }

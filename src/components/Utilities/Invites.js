@@ -17,7 +17,6 @@ const AllInvites = () => {
             }
         }).then((response)=>{
             setInvites([...response.data.Invites])
-            console.log("invites",response.data.Invites)
             setLoading(false)
         }).catch((err)=>{
             console.log(err);
@@ -27,39 +26,45 @@ const AllInvites = () => {
 
 
     // accepted invitation
-    function acceptInvitation(invite_id)
+    function acceptInvitation(invite_id , room_name)
     {
         const data = {"invite_id" : invite_id}
-        const url = "/room/add_member"
-        console.log(invite_id)
-        axios.post(url,data,{
-            headers:{
-                "content-type":"application/json",
-                "Authorization": "Token "+localStorage.getItem("auth_token")
-            }
-        }).then((response)=>{
-            window.location.reload()
-        }).catch((err)=>{
-            alert("Unable to join to room please try again")
-            console.log(err);
-        })
+        if(window.confirm(`Are you sure you dont want to join ${room_name}`))
+        {
+            const url = "/room/add_member"
+            axios.post(url,data,{
+                headers:{
+                    "content-type":"application/json",
+                    "Authorization": "Token "+localStorage.getItem("auth_token")
+                }
+            }).then((response)=>{
+                window.location.reload()
+            }).catch((err)=>{
+                alert("Unable to join to room please try again")
+                console.log(err);
+            })
+        }
 
     }
 
-    function deleteInvitation(invite_id)
+    function deleteInvitation(invite_id , room_name)
     {
         const url = "/room/reject_invite/"+invite_id
-        axios.post(url,{
-            headers:{
-                "content-type":"application/json",
-                "Authorization": "Token "+localStorage.getItem("auth_token")
-            }
-        }).then((response)=>{
-            window.location.reload()
-        }).catch((err)=>{
-            alert("Try again")
-            console.log(err);
-        })
+
+        if(window.confirm(`Are you sure you don't want to join ${room_name}`))
+        {
+            axios.post(url,{
+                headers:{
+                    "content-type":"application/json",
+                    "Authorization": "Token "+localStorage.getItem("auth_token")
+                }
+            }).then((response)=>{
+                window.location.reload()
+            }).catch((err)=>{
+                alert("Try again")
+                console.log(err);
+            })
+        }
 
     }
 
@@ -72,10 +77,9 @@ const AllInvites = () => {
         return (
             <table className="table table-hover table-striped">
                 <thead>
-                    <tr className="table-info">
+                    <tr style={{backgroundColor:"#1fcecb"}}>
                         <th scope="col">Room name</th>
                         <th scope="col">Romm owner</th>
-                        <th scope="col">Patient</th>
                         <th scope="col">Join Room</th>
                         <th scope="col">Delete Invite</th>
 
@@ -84,7 +88,6 @@ const AllInvites = () => {
                 <tbody>
                     {
                         invites.map((invite,index) => {
-                            console.log("cinvite " ,invite)
                             return(
                                 <tr key = {invite.Invite["invite_id"]}>
                                     <th>
@@ -94,17 +97,16 @@ const AllInvites = () => {
                                         {invite.Invite.room.owner["name"]}
                                     </th>
                                     <th>
-                                        {invite.Invite.room.patient["name"]}
-                                    </th>
-                                    <th>
                                         <button className="btn btn-outline-success"
-                                            onClick={()=>acceptInvitation(invite.Invite["invite_id"])}>
+                                            onClick={()=>acceptInvitation(invite.Invite["invite_id"],
+                                                                    invite.Invite.room["room_name"])}>
                                             Accept 
                                         </button>
                                     </th>
                                     <th>
                                         <button className="btn btn-outline-danger"
-                                            onClick={()=>deleteInvitation(invite.Invite["invite_id"])}>
+                                            onClick={()=>deleteInvitation(invite.Invite["invite_id"],
+                                                                        invite.Invite.room["room_name"])}>
                                             Delete
                                         </button>
                                     </th>   
