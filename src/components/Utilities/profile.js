@@ -131,7 +131,7 @@ const Profile = () => {
         return(
             <div className = "container">
                 <div className="row">
-                        <div className="card col-4">
+                        <div className="card col-lg-4 col-sm-12">
                             <img className="card-img-top rounded-circle mx-auto " 
                                 style={{width : 300 , height : 300}} 
                                 src={profile_data["pic"]} 
@@ -149,7 +149,7 @@ const Profile = () => {
                                 </Link>
                             </div>
                         </div>
-                        <div className="card  col-8 ">
+                        <div className="card  col-lg-8 col-sm-12">
                             <form className="from-inline roomform my-1 pl-2" onSubmit={updateProfile_pic}>
                                 <div className="mt-1">
                                     <h5>Upload New Profile Pic </h5>
@@ -220,7 +220,7 @@ const Profile = () => {
                         rooms["Rooms"].length === 0 ?
                         <h4>
                             You have not created or being added to any room right know. <br/>
-                            click the button bellow your prolile picture to create rooms.
+                            Click the button bellow your prolile picture to create rooms.
                         </h4>
                         :
                         <table className="table table-hover table-striped mt-1">

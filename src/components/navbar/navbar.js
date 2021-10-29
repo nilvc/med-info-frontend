@@ -19,9 +19,7 @@ export default function Navbar() {
                 "Authorization":"Token "+localStorage.getItem('auth_token')
             }})
             .then((res)=>{
-                localStorage.removeItem('auth_token');
-                localStorage.removeItem('username');
-                localStorage.removeItem('email');
+                localStorage.clear()
                 setUserstate({...userstate,"is_auth":false, 
                             "username" : "",
                             "email" : "" })
@@ -36,7 +34,7 @@ export default function Navbar() {
             <nav className="navbar navbar-expand-lg navbar-light sticky-top  mb-4 shadow-sm " 
                 style={{backgroundColor: "#D7E9F7"}}>
                 <div className="container-fluid">
-                    <Link className="navbar-brand" to="#">MED - INFO</Link>
+                    <Link className="navbar-brand" to="/">MED - INFO</Link>
                     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>
                     </button>

@@ -1,7 +1,8 @@
-import {useEffect , useState , useRef} from 'react'
+import {useEffect , useState , useRef } from 'react'
 import { useHistory } from 'react-router'
 import axios from 'axios'
 import "./Room.css"
+import { Link } from 'react-router-dom'
 
 const Room = (props) => {
 
@@ -9,6 +10,7 @@ const Room = (props) => {
     const [room_data , setRoomdata] = useState({})
     const [reports , setReports] = useState([])
     const [email , setEmail] = useState("")
+    const [search_report_by_description , setSearch_report_by_description] = useState("")
     const [regex_expression , setRegexexpression] = useState(".*")
     const regex = new RegExp(regex_expression,"i")
     const [report_data , setReportdata] = useState({
@@ -203,7 +205,7 @@ const Room = (props) => {
         return(
             <div className="container-fluid">
                 <div className="row">
-                    <div className="mx-auto room_heading col-10 text-center">
+                    <div className="mx-auto room_heading col-lg-12 text-center">
                         <h3 style={{ display : 'inline-block' ,textTransform: 'capitalize'}} >
                                 {room_data["room_name"]}
                         </h3>
@@ -214,13 +216,14 @@ const Room = (props) => {
                         {
                             owner_email === local_owner_email ?
                             <button className="btn btn-outline-danger "
-                                onClick = {delete_room}>
+                                onClick = {delete_room}
+                                style={{float:'right'}}>
                                 Delete Room
                             </button>
                             : null
                         }
                     </div>    
-                    <div className="col col-6">
+                    <div className="col col-lg-6 col-md-12 col-sm-12">
                         
                         <table className="table table-hover table-striped">
                             <thead>
@@ -279,7 +282,7 @@ const Room = (props) => {
                             </tbody>
                         </table>
                     </div>
-                    <div className="col col-6">
+                    <div className="col col-lg-6 col-md-12 col-sm-12">
 
                         {/* form for adding members only shown to owner*/}
                         {
@@ -356,7 +359,7 @@ const Room = (props) => {
                 </div>
                 <div ref ={report_head} className="row">
                     {/* this is where report_head is */}
-                    <div className="col ">
+                    <div className="col col-12">
                         <h3>Reports </h3>
                         <button  className="btn btn-dark mb-2 mr-1"
                                 onClick={() => { setRegexexpression("Bills"); seeReports()}}>
@@ -374,10 +377,17 @@ const Room = (props) => {
                             onClick={() => { setRegexexpression(".*"); seeReports()}}>
                             Show All
                         </button>
-                        
+                        <input type="text" required value={search_report_by_description} 
+                                onChange={(e)=>{setSearch_report_by_description(e.target.value)}}
+                                placeholder="Search by description "
+                                className="mx-2"/>
+                        <button className="btn btn-sm btn-success" type="submit"
+                            onClick={()=>{setRegexexpression(search_report_by_description)}}>
+                            Search
+                        </button>
                         <table className="table table-hover table-striped">
                             <thead>
-                                <tr  style={{backgroundColor:"#bf00ff"}}>
+                                <tr  style={{backgroundColor:"#bf00ff" , color:'wheat'}}>
                                 <th scope="col">Report Number</th>
                                 <th scope="col">Report title</th>
                                 <th scope="col">Report description</th>
@@ -387,10 +397,8 @@ const Room = (props) => {
                             </thead>
                             <tbody>
                                 {
-                                    reports.map( (report , index) => {
-                                        
-                                        if(regex.test(report.report["title"]))
-                                        {
+                                    reports.filter(report => ((regex.test(report.report["title"])) 
+                                                            || (regex.test(report.report["description"])))).map( (report , index) => {
                                             return (
                                                 <tr key ={report.report["report_id"]}>
                                                     <th >
@@ -406,16 +414,12 @@ const Room = (props) => {
                                                         {report.report["uploaded_by"]}
                                                     </th>
                                                     <th >
-                                                        <a href = {"http://127.0.0.1:8000"+report.report["file"]} 
-                                                            target="_blank" rel="noreferrer"> 
-                                                            Open file
-                                                        </a>
+                                                        <Link to="/pdf" target="_blank" rel="noreferrer noopener">
+                                                            <span onClick = {()=>{localStorage.setItem("pdfurl",report.report["file"])}}>Open file</span>
+                                                        </Link>
                                                     </th>
                                                 </tr>
-                                            )
-                                        }
-                                        
-                                        
+                                            )   
                                     })
                                 }
                             </tbody>
