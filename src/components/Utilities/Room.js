@@ -122,7 +122,7 @@ const Room = (props) => {
                 })
 
             }).catch((err)=>{
-                alert("Invalid credentials !!");
+                alert("Error occured . Please submit again !!");
                 console.log(err);
             });
     }
@@ -183,6 +183,10 @@ const Room = (props) => {
                 alert(name+" is no longer part of this room.")
                 room_data["members"].splice(index,1)
                 setRoomdata({...room_data,"members":room_data["members"]})
+                if(option === 2 )
+                {
+                    history.push("/profile");
+                }
                 
 
             }).catch((err)=>{

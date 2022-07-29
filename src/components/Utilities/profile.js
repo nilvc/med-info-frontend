@@ -186,7 +186,7 @@ const Profile = () => {
                                     </button>
                                 </div>
                             </form>
-                            <div className = "roomform">
+                            <div className = "roomform rounded-3">
                                 {
                                     Object.keys(searched_room).length !== 0?
                                     <table className="table table-hover table-striped">
@@ -223,7 +223,7 @@ const Profile = () => {
                             Click the button bellow your prolile picture to create rooms.
                         </h4>
                         :
-                        <table className="table table-hover table-striped mt-1">
+                        <table className="table table-hover table-striped mt-1 ">
                             <thead>
                                 <tr style={{backgroundColor:"#40e0d0"}}>
                                 <th scope="col">Your Room</th>

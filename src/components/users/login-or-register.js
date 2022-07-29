@@ -40,7 +40,6 @@ function LoginRegister() {
                     history.push("/profile")
                 }).catch((error)=>{
                     localStorage.clear()
-                    console.log("setting flase")
                     setUserstate({...userstate,"is_auth":false , 
                             "username":"",
                             "email":""})
@@ -141,7 +140,6 @@ function LoginRegister() {
                     <div className="form-container sign-up-container">
                         <form className="fform" onSubmit = {handleRegister} >
                             <h1>Create Account</h1>
-
                             <input className="finput" type="text" placeholder="first name" 
                                     name = "first_name" value = {registerfields.first_name} 
                                     onChange = {handleRegisterChange} required />
@@ -159,10 +157,9 @@ function LoginRegister() {
 
                             <input className="finput" type="password" placeholder="Password" 
                                     name = "password"  value = {registerfields.password} 
-                                    data-toggle="tooltip" data-placement="top" title="password"
                                     onChange = {handleRegisterChange} required/>
 
-                            <div className="finput from-row m-3">
+                            <div className="finput from-row m-1">
                                 <div className="custom-file col-md-12 align-self-center">
                                     <input type="file" onChange={handlefileUpload}  required 
                                             className="custom-file-input" id="customFile"
@@ -178,7 +175,7 @@ function LoginRegister() {
                         </form>
                     </div>
                     <div className="form-container sign-in-container">
-                        <form className="fform" onSubmit = {handleLogin} >
+                        <form className="fform form-group" onSubmit = {handleLogin} >
                             {/* This is shown intially */}
                             <h1>Sign in</h1>
                             <input className="finput" type="email" placeholder="Email" name = "email"  value = {loginfields.email} onChange = {handleLoginChange} required/>

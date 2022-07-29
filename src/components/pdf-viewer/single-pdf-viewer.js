@@ -2,15 +2,16 @@ import React, { useState , useEffect } from 'react';
 import { Document, Page } from 'react-pdf/dist/esm/entry.webpack';
 
 
+
 export default function Test() {
     const [numPages, setNumPages] = useState(null)
     const [pdfurl , setPdfurl] = useState("")
     const [pageNumber, setPageNumber] = useState(1)
 
     /*To Prevent right click on screen*/
-    document.addEventListener("contextmenu", (event) => {
-        event.preventDefault();
-    });
+    // document.addEventListener("contextmenu", (event) => {
+    //     event.preventDefault();
+    // });
     
     useEffect(()=>{
         const goturl = localStorage.getItem('pdfurl')
@@ -55,7 +56,7 @@ export default function Test() {
             </div>
             <div className="row mt-1 border border-dark">
                 <Document
-                    file={pdfurl}
+                    file= {pdfurl}
                     onLoadSuccess={onDocumentLoadSuccess}>
                     <Page pageNumber={pageNumber} />
                 </Document>

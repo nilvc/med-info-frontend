@@ -74,50 +74,55 @@ const AllInvites = () => {
         return (<h3>loading</h3>)
     }
     else{
-        return (
-            <table className="table table-hover table-striped">
-                <thead>
-                    <tr style={{backgroundColor:"#1fcecb"}}>
-                        <th scope="col">Room name</th>
-                        <th scope="col">Romm owner</th>
-                        <th scope="col">Join Room</th>
-                        <th scope="col">Delete Invite</th>
+        if(invites.length === 0)
+        {
+            return(<h3>Waiting for invitations ....</h3>)
+        }
+        else{
+            return (
+                    <table className="table table-hover table-striped">
+                        <thead>
+                            <tr style={{backgroundColor:"#1fcecb"}}>
+                                <th scope="col">Room name</th>
+                                <th scope="col">Romm owner</th>
+                                <th scope="col">Join Room</th>
+                                <th scope="col">Delete Invite</th>
 
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        invites.map((invite,index) => {
-                            return(
-                                <tr key = {invite.Invite["invite_id"]}>
-                                    <th>
-                                        {invite.Invite.room["room_name"]}
-                                    </th>
-                                    <th>
-                                        {invite.Invite.room.owner["name"]}
-                                    </th>
-                                    <th>
-                                        <button className="btn btn-outline-success"
-                                            onClick={()=>acceptInvitation(invite.Invite["invite_id"],
-                                                                    invite.Invite.room["room_name"])}>
-                                            Accept 
-                                        </button>
-                                    </th>
-                                    <th>
-                                        <button className="btn btn-outline-danger"
-                                            onClick={()=>deleteInvitation(invite.Invite["invite_id"],
-                                                                        invite.Invite.room["room_name"])}>
-                                            Delete
-                                        </button>
-                                    </th>   
-                                </tr>
-                            )
-                        })
-                    }
-                </tbody>
-            </table>
-            
-        )
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                invites.map((invite) => {
+                                    return(
+                                        <tr key = {invite.Invite["invite_id"]}>
+                                            <th>
+                                                {invite.Invite.room["room_name"]}
+                                            </th>
+                                            <th>
+                                                {invite.Invite.room.owner["name"]}
+                                            </th>
+                                            <th>
+                                                <button className="btn btn-outline-success"
+                                                    onClick={()=>acceptInvitation(invite.Invite["invite_id"],
+                                                                            invite.Invite.room["room_name"])}>
+                                                    Accept 
+                                                </button>
+                                            </th>
+                                            <th>
+                                                <button className="btn btn-outline-danger"
+                                                    onClick={()=>deleteInvitation(invite.Invite["invite_id"],
+                                                                                invite.Invite.room["room_name"])}>
+                                                    Delete
+                                                </button>
+                                            </th>   
+                                        </tr>
+                                    )
+                                })
+                            }
+                        </tbody>
+                    </table>
+            )
+        }
     }
     
 }
